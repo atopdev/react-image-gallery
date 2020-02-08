@@ -1,35 +1,35 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import logo from './logo.svg';
 import './App.scss';
 
-const UnsplashImage = ({ url, key }) => (
-  <div className="image-item" key={key}>
-    <img src={url} alt="myimage" />
-  </div>
-);
-
 function App() {
-  const [images, setImages] = React.useState([]);
-  const [loaded, setIsLoaded] = React.useState(false);
+  const [images, setImages] = useState([]);
+  const [loaded, setIsLoaded] = useState(false);
+  const [page, setPage] = useState(1);
 
-  const fetchImages = (count = 10) => {
-    const apiRoot = 'https://api.unsplash.com';
-    const accessKey =
-      'a22f61e98da4efa25d8860e77a91a596867dd335ecdf7feb12e086943db9565a';
-
+  const fetchImages = useCallback(() => {
     axios
-      .get(`${apiRoot}/photos/random?client_id=${accessKey}&count=${count}`)
+      .get(`https://picsum.photos/v2/list?page=${page}&limit=10`)
       .then(res => {
-        setImages([...images, ...res.data]);
+        setImages([
+          ...images,
+          ...res.data.map(i => ({
+            ...i,
+            src: `https://picsum.photos/id/${i.id}/300`,
+          })),
+        ]);
+        setPage(page + 1);
         setIsLoaded(true);
-
-        console.log(images);
       });
-  };
+  }, [images, page]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchImages();
-  }, [fetchImages]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="hero is-fullheight is-bold is-info">
@@ -39,16 +39,28 @@ function App() {
             <h1 className="title is-1">
               React Image Gallery with Infinite Scroll
             </h1>
-            <h2 className="subtitle is-6">by atopdev</h2>
           </div>
 
-          <div className="image-grid" style={{ marginTop: '30px' }}>
-            {loaded
-              ? images.map((image, index) => (
-                  <UnsplashImage url={image.urls.regular} key={index} />
-                ))
-              : ''}
-          </div>
+          <InfiniteScroll
+            dataLength={images.length}
+            next={fetchImages}
+            hasMore={true}
+            loader={<img src={logo} className="App-logo" alt="logo" />}
+            className="image-gallery"
+          >
+            <div className="image-grid" style={{ marginTop: '30px' }}>
+              {loaded
+                ? images.map(image => (
+                    <LazyLoadImage
+                      key={image.id}
+                      effect="blur"
+                      src={image.src}
+                      wrapperClassName="image-item"
+                    />
+                  ))
+                : ''}
+            </div>
+          </InfiniteScroll>
         </div>
       </div>
     </div>

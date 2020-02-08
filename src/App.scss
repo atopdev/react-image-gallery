@@ -1,9 +1,11 @@
+@import '~react-lazy-load-image-component/src/effects/blur.css';
+
 .App {
   text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 100px;
   pointer-events: none;
 }
 
@@ -58,4 +60,8 @@
     height: 100%;
     object-fit: cover;
   }
+}
+
+.image-gallery {
+  overflow: hidden !important;
 }
