@@ -44,6 +44,11 @@
   text-align: center;
 }
 
+.hero-body {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
 .image-grid {
   display: grid;
   grid-gap: 10px;
