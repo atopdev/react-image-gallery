@@ -31,7 +31,7 @@ $ yarn start
 You can access the frontend by visiting [http://localhost:3000](http://localhost:3000)
 
 ## Screenshots
-
+![image](https://user-images.githubusercontent.com/25312831/74097566-5ab8a400-4b48-11ea-8e01-5e6056bd7f83.png)
 
 ## References
 
